@@ -1,0 +1,35 @@
+{
+  "devDependencies": {
+    "@quarto/netlify-plugin-quarto": "^0.0.5"
+  },
+  "name": "kelli-analytics-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio showcasing marketing analytics projects using R, Quarto, and public datasets",
+  "main": "index.js",
+  "dependencies": {
+    "before-after-hook": "^2.2.3",
+    "deprecation": "^2.3.1",
+    "is-plain-object": "^5.0.0",
+    "node-fetch": "^2.7.0",
+    "once": "^1.4.0",
+    "tr46": "^0.0.3",
+    "universal-user-agent": "^6.0.1",
+    "webidl-conversions": "^3.0.1",
+    "whatwg-url": "^5.0.0",
+    "wrappy": "^1.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kellitrexel/kelli-analytics-portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kellitrexel/kelli-analytics-portfolio/issues"
+  },
+  "homepage": "https://github.com/kellitrexel/kelli-analytics-portfolio#readme"
+}
