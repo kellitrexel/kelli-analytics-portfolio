@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Retention Cohorts – Kelli Trexel — Marketing Analytics</title>
+<title>Retention Cohorts (Simulated) – Kelli Trexel — Marketing Analytics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,7 +135,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Retention Cohorts</h1>
+<h1 class="title">Retention Cohorts (Simulated)</h1>
 </div>
 
 
@@ -152,9 +152,15 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Coming soon.</p>
+<section id="retention-cohorts" class="level1">
+<h1>Retention Cohorts</h1>
+<p>This project simulates how retention changes over time for different user cohorts.</p>
+<p>library(tidyverse)</p>
+<p>set.seed(123) cohorts &lt;- tibble( cohort = rep(1:3, each = 12), month = rep(1:12, times = 3), retention = round(100 * exp(-0.2*month) + rnorm(36, 0, 5)) )</p>
+<p>cohorts %&gt;% ggplot(aes(month, retention, color = factor(cohort))) + geom_line() + labs(title = “Simulated Retention Cohorts”, y = “Retention (%)”, x = “Months”)</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

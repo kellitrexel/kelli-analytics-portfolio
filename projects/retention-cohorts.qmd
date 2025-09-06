@@ -1,5 +1,23 @@
 ---
-title: "Retention Cohorts"
+title: "Retention Cohorts (Simulated)"
+format: html
 ---
 
-Coming soon.
+# Retention Cohorts
+
+This project simulates how retention changes over time for different user cohorts.  
+
+```{r}
+library(tidyverse)
+
+set.seed(123)
+cohorts <- tibble(
+  cohort = rep(1:3, each = 12),
+  month = rep(1:12, times = 3),
+  retention = round(100 * exp(-0.2*month) + rnorm(36, 0, 5))
+)
+
+cohorts %>%
+  ggplot(aes(month, retention, color = factor(cohort))) +
+  geom_line() +
+  labs(title = "Simulated Retention Cohorts", y = "Retention (%)", x = "Months")

@@ -1,5 +1,20 @@
----
-title: "Influencer Efficiency"
+title: "Influencer Engagement Efficiency (Simulated)"
+format: html
 ---
 
-Coming soon.
+# Influencer Engagement
+
+This project simulates influencer reach vs. engagement efficiency.  
+
+```{r}
+library(tidyverse)
+
+set.seed(42)
+influencers <- tibble(
+  name = c("Trendsetter Tara", "Glamour Guru", "MicroMarketer Mia"),
+  reach = c(50000, 80000, 20000),
+  engagements = c(3200, 4600, 1500)
+) %>%
+  mutate(rate = round(100*engagements/reach, 2))
+
+influencers

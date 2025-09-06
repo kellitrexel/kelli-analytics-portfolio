@@ -23,16 +23,16 @@
   {
     "objectID": "projects/influencer-efficiency.html",
     "href": "projects/influencer-efficiency.html",
-    "title": "Influencer Efficiency",
+    "title": "Influencer Engagement",
     "section": "",
-    "text": "Coming soon."
+    "text": "title: “Influencer Engagement Efficiency (Simulated)” format: html —\n\nInfluencer Engagement\nThis project simulates influencer reach vs. engagement efficiency.\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.2     ✔ tibble    3.3.0\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.1.0     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nset.seed(42)\ninfluencers &lt;- tibble(\n  name = c(\"Trendsetter Tara\", \"Glamour Guru\", \"MicroMarketer Mia\"),\n  reach = c(50000, 80000, 20000),\n  engagements = c(3200, 4600, 1500)\n) %&gt;%\n  mutate(rate = round(100*engagements/reach, 2))\n\ninfluencers\n\n# A tibble: 3 × 4\n  name              reach engagements  rate\n  &lt;chr&gt;             &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;\n1 Trendsetter Tara  50000        3200  6.4 \n2 Glamour Guru      80000        4600  5.75\n3 MicroMarketer Mia 20000        1500  7.5"
   },
   {
     "objectID": "projects/retention-cohorts.html",
     "href": "projects/retention-cohorts.html",
-    "title": "Retention Cohorts",
+    "title": "Retention Cohorts (Simulated)",
     "section": "",
-    "text": "Coming soon."
+    "text": "Retention Cohorts\nThis project simulates how retention changes over time for different user cohorts.\nlibrary(tidyverse)\nset.seed(123) cohorts &lt;- tibble( cohort = rep(1:3, each = 12), month = rep(1:12, times = 3), retention = round(100 * exp(-0.2*month) + rnorm(36, 0, 5)) )\ncohorts %&gt;% ggplot(aes(month, retention, color = factor(cohort))) + geom_line() + labs(title = “Simulated Retention Cohorts”, y = “Retention (%)”, x = “Months”)"
   },
   {
     "objectID": "projects/paid-media-roi.html",
