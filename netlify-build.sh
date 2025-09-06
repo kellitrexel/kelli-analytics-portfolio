@@ -1,7 +1,10 @@
 set -euo pipefail
-
 VER="${QUARTO_VERSION:-1.5.56}"
 WORKDIR="$(mktemp -d)"
+
+echo "Installing R..."
+sudo apt-get update -y
+sudo apt-get install -y --no-install-recommends r-base
 
 echo "Downloading Quarto ${VER}…"
 curl -fsSL -o "${WORKDIR}/quarto.tgz" \
@@ -9,12 +12,10 @@ curl -fsSL -o "${WORKDIR}/quarto.tgz" \
 
 echo "Unpacking Quarto…"
 tar -xzf "${WORKDIR}/quarto.tgz" -C "${WORKDIR}"
-
-# Add Quarto to PATH (kept OUTSIDE the repo)
 export PATH="${WORKDIR}/quarto-${VER}/bin:${PATH}"
 
-echo "Quarto version:"
-quarto --version
+echo "Quarto version:" && quarto --version
+echo "R version:" && R --version | head -n1
 
 echo "Rendering site…"
 quarto render
