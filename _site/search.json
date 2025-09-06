@@ -1,14 +1,14 @@
 [
   {
-    "objectID": "projects/paid-media-roi.html",
-    "href": "projects/paid-media-roi.html",
-    "title": "Paid Media ROI Reallocation (Simulated)",
-    "section": "",
-    "text": "Question\nIf I have $20,000 this month, how should I reallocate across campaigns to maximize profit?\n\n\nApproach (quick version)\n\nSimulated dataset of 8 campaigns across 4 channels\n\nROI = (revenue - spend) / spend\n\nAllocate $20k to the top quartile by ROI (proportional), then estimate impact\n\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.2     ✔ tibble    3.3.0\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.1.0     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nset.seed(42)\nads &lt;- tibble(\n  campaign = c(\"82 Sweater TikTok\",\"61 Vest Facebook\",\"92 Pant Instagram\",\"32 Pant Google\",\n               \"71 Jacket TikTok\",\"44 Shoes Facebook\",\"27 Hat Instagram\",\"10 Socks Google\"),\n  channel  = c(\"TikTok\",\"Facebook\",\"Instagram\",\"Google\",\"TikTok\",\"Facebook\",\"Instagram\",\"Google\"),\n  spend    = round(runif(8, 500, 2500), 0),\n  clicks   = round(runif(8, 1500, 12000), 0)\n) |&gt;\n  mutate(\n    conv    = round(clicks * runif(n(), 0.01, 0.04), 0),\n    aov     = round(runif(n(), 45, 120), 0),\n    revenue = conv * aov,\n    roi     = (revenue - spend) / spend\n  ) |&gt;\n  arrange(desc(roi))\n\nads\n\n# A tibble: 8 × 8\n  campaign          channel   spend clicks  conv   aov revenue   roi\n  &lt;chr&gt;             &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;\n1 10 Socks Google   Google      769  11370   437   106   46322 59.2 \n2 71 Jacket TikTok  TikTok     1783  11314   420    79   33180 17.6 \n3 27 Hat Instagram  Instagram  1973   6354   252   100   25200 11.8 \n4 32 Pant Google    Google     2161   9051   243   113   27459 11.7 \n5 92 Pant Instagram Instagram  1072   6306   153    74   11322  9.56\n6 82 Sweater TikTok TikTok     2330   8398   330    51   16830  6.22\n7 61 Vest Facebook  Facebook   2374   8903   120    84   10080  3.25\n8 44 Shoes Facebook Facebook   1538   4182    59   108    6372  3.14\n\n\n\n\nBaseline summary\n\nbaseline &lt;- ads |&gt;\n  summarise(\n    campaigns   = n(),\n    total_spend = sum(spend),\n    total_rev   = sum(revenue),\n    avg_roi     = mean(roi)\n  )\nbaseline\n\n# A tibble: 1 × 4\n  campaigns total_spend total_rev avg_roi\n      &lt;int&gt;       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1         8       14000    176765    15.3\n\n\n\n\nReallocate $20k to top quartile by ROI\n\nalloc &lt;- 20000\n\n# top quartile of campaigns by ROI (use nrow(), not n())\ntop_q &lt;- ads |&gt; slice_head(n = ceiling(nrow(ads) / 4))\n\n# proportional weights by ROI within top quartile\nweights &lt;- top_q$roi / sum(top_q$roi)\n\ntop_alloc &lt;- top_q |&gt;\n  mutate(\n    add_spend = round(alloc * weights, 0),\n    proj_rev  = revenue + add_spend * (1 + roi)\n  )\n\nproj &lt;- ads |&gt;\n  anti_join(top_q, by = \"campaign\") |&gt;\n  mutate(add_spend = 0, proj_rev = revenue) |&gt;\n  bind_rows(top_alloc)\n\nprojected &lt;- proj |&gt;\n  summarise(\n    new_spend   = sum(spend + add_spend),\n    new_rev     = sum(proj_rev),\n    new_avg_roi = (new_rev - new_spend) / new_spend\n  )\nprojected\n\n# A tibble: 1 × 3\n  new_spend  new_rev new_avg_roi\n      &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;\n1     34000 1190719.        34.0\n\n\n\n\nVisual: ROI by campaign\n\nads |&gt;\n  ggplot(aes(x = reorder(campaign, roi), y = roi, fill = channel)) +\n  geom_col() +\n  coord_flip() +\n  labs(x = \"Campaign\", y = \"ROI\", title = \"Baseline ROI by Campaign\")\n\n\n\n\n\n\n\n\n\n\nFindings\n\nBaseline average ROI: 15.31\n\nProjected average ROI after reallocating $20k to the top quartile: 34.02\n\n\n\nDecision\nShift $20k into the top quartile campaigns. Recheck in 2 weeks; add caps if ROI decays.\n\n\nWhat I’d test next\nAd-set holdouts, creative rotation cadence, and channel-level saturation checks."
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
+    "title": "About Me",
+    "section": "",
+    "text": "I’m a Marketing Account Manager at Patch, a digital marketing agency that provides full service marketing to cash based physical therapy, chiropractic, and more! I am currently pivoting into Marketing Strategy & Analytics. My focus and passion lies in turning messy data into clean insights that drive real business decisions.\n\n\n\nPaid Media analysis & ROI modeling\nRetention and churn risk analysis\nCRM automation and reporting systems\n\n\n\n\nDownload Resume\n\n\n\n\nLinkedIn\nGitHub"
+  },
+  {
+    "objectID": "about.html#hi-im-kelli-trexel",
+    "href": "about.html#hi-im-kelli-trexel",
     "title": "About Me",
     "section": "",
     "text": "I’m a Marketing Account Manager at Patch, a digital marketing agency that provides full service marketing to cash based physical therapy, chiropractic, and more! I am currently pivoting into Marketing Strategy & Analytics. My focus and passion lies in turning messy data into clean insights that drive real business decisions.\n\n\n\nPaid Media analysis & ROI modeling\nRetention and churn risk analysis\nCRM automation and reporting systems\n\n\n\n\nDownload Resume\n\n\n\n\nLinkedIn\nGitHub"
@@ -21,13 +21,6 @@
     "text": "Playbooks\nComing soon."
   },
   {
-    "objectID": "projects/retention-cohorts.html",
-    "href": "projects/retention-cohorts.html",
-    "title": "Retention Cohorts",
-    "section": "",
-    "text": "Coming soon."
-  },
-  {
     "objectID": "projects/influencer-efficiency.html",
     "href": "projects/influencer-efficiency.html",
     "title": "Influencer Efficiency",
@@ -35,11 +28,18 @@
     "text": "Coming soon."
   },
   {
-    "objectID": "about.html#hi-im-kelli-trexel",
-    "href": "about.html#hi-im-kelli-trexel",
-    "title": "About Me",
+    "objectID": "projects/retention-cohorts.html",
+    "href": "projects/retention-cohorts.html",
+    "title": "Retention Cohorts",
     "section": "",
-    "text": "I’m a Marketing Account Manager at Patch, a digital marketing agency that provides full service marketing to cash based physical therapy, chiropractic, and more! I am currently pivoting into Marketing Strategy & Analytics. My focus and passion lies in turning messy data into clean insights that drive real business decisions.\n\n\n\nPaid Media analysis & ROI modeling\nRetention and churn risk analysis\nCRM automation and reporting systems\n\n\n\n\nDownload Resume\n\n\n\n\nLinkedIn\nGitHub"
+    "text": "Coming soon."
+  },
+  {
+    "objectID": "projects/paid-media-roi.html",
+    "href": "projects/paid-media-roi.html",
+    "title": "Paid Media ROI Reallocation (Simulated)",
+    "section": "",
+    "text": "Question\nIf I have $20,000 this month, how should I reallocate across campaigns to maximize profit?\n\n\nApproach (quick version)\n\nSimulated dataset of 8 campaigns across 4 channels\n\nROI = (revenue - spend) / spend\n\nAllocate $20k to the top quartile by ROI (proportional), then estimate impact\n\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.2     ✔ tibble    3.3.0\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.1.0     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nset.seed(42)\nads &lt;- tibble(\n  campaign = c(\"82 Sweater TikTok\",\"61 Vest Facebook\",\"92 Pant Instagram\",\"32 Pant Google\",\n               \"71 Jacket TikTok\",\"44 Shoes Facebook\",\"27 Hat Instagram\",\"10 Socks Google\"),\n  channel  = c(\"TikTok\",\"Facebook\",\"Instagram\",\"Google\",\"TikTok\",\"Facebook\",\"Instagram\",\"Google\"),\n  spend    = round(runif(8, 500, 2500), 0),\n  clicks   = round(runif(8, 1500, 12000), 0)\n) |&gt;\n  mutate(\n    conv    = round(clicks * runif(n(), 0.01, 0.04), 0),\n    aov     = round(runif(n(), 45, 120), 0),\n    revenue = conv * aov,\n    roi     = (revenue - spend) / spend\n  ) |&gt;\n  arrange(desc(roi))\n\nads\n\n# A tibble: 8 × 8\n  campaign          channel   spend clicks  conv   aov revenue   roi\n  &lt;chr&gt;             &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;\n1 10 Socks Google   Google      769  11370   437   106   46322 59.2 \n2 71 Jacket TikTok  TikTok     1783  11314   420    79   33180 17.6 \n3 27 Hat Instagram  Instagram  1973   6354   252   100   25200 11.8 \n4 32 Pant Google    Google     2161   9051   243   113   27459 11.7 \n5 92 Pant Instagram Instagram  1072   6306   153    74   11322  9.56\n6 82 Sweater TikTok TikTok     2330   8398   330    51   16830  6.22\n7 61 Vest Facebook  Facebook   2374   8903   120    84   10080  3.25\n8 44 Shoes Facebook Facebook   1538   4182    59   108    6372  3.14\n\n\n\n\nBaseline summary\n\nbaseline &lt;- ads |&gt;\n  summarise(\n    campaigns   = n(),\n    total_spend = sum(spend),\n    total_rev   = sum(revenue),\n    avg_roi     = mean(roi)\n  )\nbaseline\n\n# A tibble: 1 × 4\n  campaigns total_spend total_rev avg_roi\n      &lt;int&gt;       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1         8       14000    176765    15.3\n\n\n\n\nReallocate $20k to top quartile by ROI\n\nalloc &lt;- 20000\n\n# top quartile of campaigns by ROI (use nrow(), not n())\ntop_q &lt;- ads |&gt; slice_head(n = ceiling(nrow(ads) / 4))\n\n# proportional weights by ROI within top quartile\nweights &lt;- top_q$roi / sum(top_q$roi)\n\ntop_alloc &lt;- top_q |&gt;\n  mutate(\n    add_spend = round(alloc * weights, 0),\n    proj_rev  = revenue + add_spend * (1 + roi)\n  )\n\nproj &lt;- ads |&gt;\n  anti_join(top_q, by = \"campaign\") |&gt;\n  mutate(add_spend = 0, proj_rev = revenue) |&gt;\n  bind_rows(top_alloc)\n\nprojected &lt;- proj |&gt;\n  summarise(\n    new_spend   = sum(spend + add_spend),\n    new_rev     = sum(proj_rev),\n    new_avg_roi = (new_rev - new_spend) / new_spend\n  )\nprojected\n\n# A tibble: 1 × 3\n  new_spend  new_rev new_avg_roi\n      &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;\n1     34000 1190719.        34.0\n\n\n\n\nVisual: ROI by campaign\n\nads |&gt;\n  ggplot(aes(x = reorder(campaign, roi), y = roi, fill = channel)) +\n  geom_col() +\n  coord_flip() +\n  labs(x = \"Campaign\", y = \"ROI\", title = \"Baseline ROI by Campaign\")\n\n\n\n\n\n\n\n\n\n\nFindings\n\nBaseline average ROI: 15.31\n\nProjected average ROI after reallocating $20k to the top quartile: 34.02\n\n\n\nDecision\nShift $20k into the top quartile campaigns. Recheck in 2 weeks; add caps if ROI decays.\n\n\nWhat I’d test next\nAd-set holdouts, creative rotation cadence, and channel-level saturation checks."
   },
   {
     "objectID": "index.html",
