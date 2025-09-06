@@ -1,8 +1,6 @@
 [build]
+  command = "bash netlify-build.sh"
   publish = "_site"
 
 [build.environment]
   QUARTO_VERSION = "1.5.56"
-
-[[plugins]]
-  package = "@quarto/netlify-plugin-quarto"
