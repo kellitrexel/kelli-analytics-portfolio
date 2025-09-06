@@ -1,0 +1,20 @@
+{
+  "index.qmd": {
+    "index.html": "eaa9e894"
+  },
+  "about.qmd": {
+    "about.html": "7028d23f"
+  },
+  "projects/retention-cohorts.qmd": {
+    "retention-cohorts.html": "c236cb5b"
+  },
+  "projects/influencer-efficiency.qmd": {
+    "influencer-efficiency.html": "7a33146e"
+  },
+  "projects/paid-media-roi.qmd": {
+    "paid-media-roi.html": "45810fc8"
+  },
+  "playbooks/index.qmd": {
+    "index.html": "2ef92a64"
+  }
+}

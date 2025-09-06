@@ -1,0 +1,18 @@
+---
+title: "About Me"
+---
+
+## Hi, I'm Kelli Trexel 
+I'm a Marketing Account Manager at Patch, a digital marketing agency that provides full service marketing to cash based physical therapy, chiropractic, and more! I am currently pivoting into **Marketing Strategy & Analytics**. My focus and passion lies in turning messy data into clean insights that drive real business decisions.
+
+### What I Do
+- Paid Media analysis & ROI modeling
+- Retention and churn risk analysis
+- CRM automation and reporting systems
+
+### My Resume
+[ Download Resume](Kelli-Trexel-Resume.pdf){target="blank"}
+
+### Let's Connect
+- [LinkedIn](https://www.linkedin.com/in/kellitrexel)
+- [GitHub](https://github.com/kellitrexel)

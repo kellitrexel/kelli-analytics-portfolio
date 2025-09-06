@@ -1,0 +1,95 @@
+---
+title: "Paid Media ROI Reallocation (Simulated)"
+format: html
+---
+
+### Question
+If I have $20,000 this month, how should I reallocate across campaigns to maximize profit?
+
+### Approach (quick version)
+- Simulated dataset of 8 campaigns across 4 channels  
+- ROI = (revenue - spend) / spend  
+- Allocate $20k to the top quartile by ROI (proportional), then estimate impact
+
+```{r}
+library(tidyverse)
+
+set.seed(42)
+ads <- tibble(
+  campaign = c("82 Sweater TikTok","61 Vest Facebook","92 Pant Instagram","32 Pant Google",
+               "71 Jacket TikTok","44 Shoes Facebook","27 Hat Instagram","10 Socks Google"),
+  channel  = c("TikTok","Facebook","Instagram","Google","TikTok","Facebook","Instagram","Google"),
+  spend    = round(runif(8, 500, 2500), 0),
+  clicks   = round(runif(8, 1500, 12000), 0)
+) |>
+  mutate(
+    conv    = round(clicks * runif(n(), 0.01, 0.04), 0),
+    aov     = round(runif(n(), 45, 120), 0),
+    revenue = conv * aov,
+    roi     = (revenue - spend) / spend
+  ) |>
+  arrange(desc(roi))
+
+ads
+```
+
+### Baseline summary
+```{r}
+baseline <- ads |>
+  summarise(
+    campaigns   = n(),
+    total_spend = sum(spend),
+    total_rev   = sum(revenue),
+    avg_roi     = mean(roi)
+  )
+baseline
+```
+
+### Reallocate $20k to top quartile by ROI
+```{r}
+alloc <- 20000
+
+# top quartile of campaigns by ROI (use nrow(), not n())
+top_q <- ads |> slice_head(n = ceiling(nrow(ads) / 4))
+
+# proportional weights by ROI within top quartile
+weights <- top_q$roi / sum(top_q$roi)
+
+top_alloc <- top_q |>
+  mutate(
+    add_spend = round(alloc * weights, 0),
+    proj_rev  = revenue + add_spend * (1 + roi)
+  )
+
+proj <- ads |>
+  anti_join(top_q, by = "campaign") |>
+  mutate(add_spend = 0, proj_rev = revenue) |>
+  bind_rows(top_alloc)
+
+projected <- proj |>
+  summarise(
+    new_spend   = sum(spend + add_spend),
+    new_rev     = sum(proj_rev),
+    new_avg_roi = (new_rev - new_spend) / new_spend
+  )
+projected
+```
+
+### Visual: ROI by campaign
+```{r}
+ads |>
+  ggplot(aes(x = reorder(campaign, roi), y = roi, fill = channel)) +
+  geom_col() +
+  coord_flip() +
+  labs(x = "Campaign", y = "ROI", title = "Baseline ROI by Campaign")
+```
+
+### Findings
+- Baseline average ROI: `r round(baseline$avg_roi, 2)`  
+- Projected average ROI after reallocating $20k to the top quartile: `r round(projected$new_avg_roi, 2)`
+
+### Decision
+Shift $20k into the top quartile campaigns. Recheck in 2 weeks; add caps if ROI decays.
+
+### What I’d test next
+Ad-set holdouts, creative rotation cadence, and channel-level saturation checks.

@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Kelli Trexel — Marketing Analytics"
+  navbar:
+    left:
+      - text: "Case Studies"
+        menu:
+          - text: "Paid Media ROI"
+            href: projects/paid-media-roi.qmd
+          - text: "Retention Cohorts"
+            href: projects/retention-cohorts.qmd
+          - text: "Influencer Efficiency"
+            href: projects/influencer-efficiency.qmd
+      - text: "Playbooks"
+        href: playbooks/index.qmd
+      - text: "About"
+        href: about.qmd
+
+format:
+  html:
+    theme: cosmo
+    code-copy: true
+  
+
