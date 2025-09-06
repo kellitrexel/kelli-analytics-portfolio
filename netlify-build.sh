@@ -1,18 +1,20 @@
-set -e
+set -euo pipefail
 
-# pick a Quarto version that works well on Netlify
-export QUARTO_VERSION=1.5.56
+VER="${QUARTO_VERSION:-1.5.56}"
+WORKDIR="$(mktemp -d)"
 
-echo "Downloading Quarto ${QUARTO_VERSION}..."
-curl -fsSL -o quarto.tgz \
-  https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz
+echo "Downloading Quarto ${VER}…"
+curl -fsSL -o "${WORKDIR}/quarto.tgz" \
+  "https://github.com/quarto-dev/quarto-cli/releases/download/v${VER}/quarto-${VER}-linux-amd64.tar.gz"
 
-echo "Unpacking Quarto..."
-tar -xzf quarto.tgz
+echo "Unpacking Quarto…"
+tar -xzf "${WORKDIR}/quarto.tgz" -C "${WORKDIR}"
 
-# add Quarto to PATH for this build
-export PATH="$PWD/quarto-${QUARTO_VERSION}/bin:$PATH"
+# Add Quarto to PATH (kept OUTSIDE the repo)
+export PATH="${WORKDIR}/quarto-${VER}/bin:${PATH}"
 
-echo "Rendering site with Quarto..."
+echo "Quarto version:"
 quarto --version
+
+echo "Rendering site…"
 quarto render
